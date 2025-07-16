@@ -6,5 +6,57 @@
     <link rel="stylesheet" href="./output.css" />
   </head>
   <body>
+    <div class="flex flex-col items-center">
+      <!-- Balance -->
+      <h1 class="text-4xl font-bold mt-4">Balance</h1>
+      <p class="balance my-4">0,00 €</p>
+      <div class="flex gap-2">
+        <div>
+          <h2 class="text-2xl font-bold">Total Revenue</h2>
+          <p class="revenue text-center mt-4">0,00 €</p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold">Total Spending</h2>
+          <p class="spending text-center mt-4">0,00 €</p>
+        </div>
+      </div>
+      <div class="flex">
+        <div class="flex flex-col">
+          <input
+            type="text"
+            placeholder="amount"
+            class="transaction-amount border border-black p-2 mt-4"
+          />
+          <input
+            type="text"
+            placeholder="description"
+            class="transaction-description border border-black p-2"
+          />
+          <input
+            type="date"
+            min="2010-01-01"
+            max="2045-12-31"
+            class="date-picker border border-black p-2"
+          />
+        </div>
+        <div class="flex flex-col ml-8 mt-4">
+          <input type="radio" name="transaction" id="revenue" />
+          <label for="revenue">Revenue (+) </label>
+          <input type="radio" name="transaction" id="spending" />
+          <label for="expense">Spending (-)</label>
+        </div>
+      </div>
+      <p class="error text-red-500 collapse">A</p>
+      <button
+        disabled
+        class="add-transaction bg-gray-500 px-8 py-2 active:bg-gray-300 rounded-lg mt-4 disabled:bg-gray-300 disabled:hover:cursor-not-allowed"
+      >
+        Add Transaction
+      </button>
+      <div class="transactions border border-black mt-4 flex flex-col gap-2">
+        Transactions >
+      </div>
+    </div>
+    <script src="script.js"></script>
   </body>
 </html>
