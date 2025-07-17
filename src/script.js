@@ -1,6 +1,7 @@
 "use strict";
 
 // DOM Elements
+
 const dateInput = document.querySelector(".date-picker");
 const amountInput = document.querySelector(".transaction-amount");
 const descriptionInput = document.querySelector(".transaction-description");
@@ -15,6 +16,7 @@ const addTransactionButton = document.querySelector(".add-transaction");
 const transactionsContainer = document.querySelector(".transactions");
 
 // Variables
+
 const transactions = [];
 const today = new Date().toISOString().split("T")[0];
 
@@ -22,16 +24,13 @@ let totalBalance = 0;
 let totalRevenue = 0;
 let totalSpending = 0;
 
-// Helper Functions
+// Functions
+
 const formatCurrency = (value) => value.toFixed(2).replace(".", ",") + " €";
 
 const displayError = (message) => {
   errorMessage.textContent = message;
   errorMessage.classList.remove("collapse");
-};
-
-const hideError = () => {
-  errorMessage.classList.add("collapse");
 };
 
 const updateAddButtonState = () => {
@@ -53,7 +52,7 @@ const validateInputs = () => {
   } else if (dateValue < minDate || dateValue > maxDate) {
     displayError("Date must be between 2010 and 2045.");
   } else {
-    hideError();
+    errorMessage.classList.add("collapse");
   }
 
   updateAddButtonState();
@@ -75,8 +74,8 @@ const updateTotalsUI = () => {
 
 const renderTransaction = (transaction) => {
   const html = `
-    <div class="flex gap-2 transaction">
-      <p>${transaction.type === "revenue" ? "+" : "-"}${transaction.amount}</p>
+    <div class="flex gap-2 transaction" data-id="${transaction.id}">
+      <p>${transaction.type === "revenue" ? "+" : "-"}${transaction.amount} €</p>
       <p>${transaction.description}</p>
       <p>${transaction.date}</p>
         <button
@@ -110,12 +109,62 @@ const addTransaction = () => {
   };
 
   transactions.push(newTransaction);
+  saveTransactions();
+  console.log(localStorage.getItem("transactions"));
   renderTransaction(newTransaction);
   updateTotalsUI();
   resetForm();
 };
 
+const removeTransaction = (id) => {
+  const index = transactions.findIndex((t) => t.id === id);
+  const selectedTransaction = transactions[index];
+
+  if (selectedTransaction.type === "revenue") {
+    totalBalance -= selectedTransaction.amount;
+    totalRevenue -= selectedTransaction.amount;
+  } else {
+    totalBalance += Number(selectedTransaction.amount);
+    totalSpending += Number(selectedTransaction.amount);
+  }
+  transactions.splice(index, 1);
+  saveTransactions();
+  updateTotalsUI();
+};
+
+// Localstorage functions
+
+const saveTransactions = function () {
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+};
+
+const loadTransactions = function () {
+  const savedTransactions = localStorage.getItem("transactions");
+
+  if (savedTransactions) {
+    const parsedTransactions = JSON.parse(savedTransactions);
+
+    parsedTransactions.forEach((transaction) => {
+      transactions.push(transaction);
+      renderTransaction(transaction);
+
+      console.log(transaction.type);
+
+      if (transaction.type === "spending") {
+        totalBalance -= Number(transaction.amount);
+        totalSpending -= Number(transaction.amount);
+      } else {
+        totalBalance += Number(transaction.amount);
+        totalRevenue += Number(transaction.amount);
+      }
+    });
+
+    updateTotalsUI();
+  }
+};
+
 // Event Listeners
+
 addTransactionButton.addEventListener("click", addTransaction);
 
 amountInput.addEventListener("input", () => {
@@ -156,8 +205,13 @@ dateInput.addEventListener("change", () => {
 
 transactionsContainer.addEventListener("click", (e) => {
   if (e.target.closest("button")) {
-    e.target.closest(".transaction").remove();
+    const transactionElement = e.target.closest(".transaction");
+    const transactionID = Number(transactionElement.dataset.id);
+    transactionElement.remove();
+    removeTransaction(transactionID);
   }
 });
+
+document.addEventListener("DOMContentLoaded", loadTransactions);
 
 dateInput.value = today;
