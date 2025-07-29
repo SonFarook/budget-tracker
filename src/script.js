@@ -51,6 +51,8 @@ const validateInputs = () => {
     displayError("Please select a transaction type.");
   } else if (dateValue < minDate || dateValue > maxDate) {
     displayError("Date must be between 2010 and 2045.");
+  } else if (!descriptionInput.value) {
+    displayError("Please enter a description.");
   } else {
     errorMessage.classList.add("collapse");
   }
@@ -66,24 +68,45 @@ const resetForm = () => {
   addTransactionButton.disabled = true;
 };
 
+const toggleTextColor = (value, element) => {
+  if (value > 0) {
+    element.classList.add("text-green-500");
+    element.classList.remove("text-red-500");
+  } else if (value < 0) {
+    element.classList.add("text-red-500");
+    element.classList.remove("text-green-500");
+  } else {
+    element.classList.remove("text-red-500");
+    element.classList.remove("text-green-500");
+  }
+  console.log(value);
+};
+
 const updateTotalsUI = () => {
   balanceDisplay.textContent = formatCurrency(totalBalance);
   spendingDisplay.textContent = formatCurrency(totalSpending);
   revenueDisplay.textContent = formatCurrency(totalRevenue);
+
+  toggleTextColor(totalBalance, balanceDisplay);
+  toggleTextColor(totalSpending, spendingDisplay);
+  toggleTextColor(totalRevenue, revenueDisplay);
 };
 
 const renderTransaction = (transaction) => {
   const html = `
-    <div class="flex gap-2 transaction" data-id="${transaction.id}">
-      <p>${transaction.type === "revenue" ? "+" : "-"}${transaction.amount} €</p>
-      <p>${transaction.description}</p>
-      <p>${transaction.date}</p>
-        <button
-          class="rounded-full bg-black text-white hover:bg-gray-800 hover:cursor-pointer active:bg-gray-700"
-          >
-            Delete
-      </button>
-    </div>
+        <div data-id="${transaction.id}" class="transaction flex gap-4 justify-center items-center mx-8 last:mb-8">
+          <div class="border border-white rounded-2xl flex justify-between items-center min-w-[320px]">
+            <div class="flex flex-col ml-3">
+              <p class="text-lg">${transaction.description}</p>
+              <p class="font-bold text-sm -mt-2">${transaction.date}</p>
+            </div>
+            <p class="ml-24 mr-1 ${transaction.type === "revenue" ? "text-green-500" : "text-red-500"}">${transaction.type === "revenue" ? "+" : "-"}${transaction.amount} €</p>
+          </div>
+          <button>
+            <img src="img/delete.png" alt="Delete Transaction" class="w-6 h-6 hover:cursor-pointer hover:opacity-90 active:opacity-80">
+          </button>
+        </div>
+      </div>
   `;
   transactionsContainer.insertAdjacentHTML("beforeend", html);
 };
@@ -110,7 +133,6 @@ const addTransaction = () => {
 
   transactions.push(newTransaction);
   saveTransactions();
-  console.log(localStorage.getItem("transactions"));
   renderTransaction(newTransaction);
   updateTotalsUI();
   resetForm();
@@ -147,15 +169,14 @@ const loadTransactions = function () {
     parsedTransactions.forEach((transaction) => {
       transactions.push(transaction);
       renderTransaction(transaction);
-
-      console.log(transaction.type);
+      const amount = parseFloat(transaction.amount.replace(",", "."));
 
       if (transaction.type === "spending") {
-        totalBalance -= Number(transaction.amount);
-        totalSpending -= Number(transaction.amount);
+        totalBalance -= Number(amount);
+        totalSpending -= Number(amount);
       } else {
-        totalBalance += Number(transaction.amount);
-        totalRevenue += Number(transaction.amount);
+        totalBalance += Number(amount);
+        totalRevenue += Number(amount);
       }
     });
 
@@ -193,6 +214,8 @@ amountInput.addEventListener("paste", (event) => {
   }
   amountInput.value = parts.join(",");
 });
+
+descriptionInput.addEventListener("input", validateInputs);
 
 transactionTypeRadios.forEach((radio) =>
   radio.addEventListener("change", validateInputs)

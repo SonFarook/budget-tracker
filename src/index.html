@@ -6,57 +6,100 @@
     <link rel="stylesheet" href="./output.css" />
   </head>
   <body>
-    <div class="flex flex-col items-center">
-      <!-- Balance -->
-      <h1 class="text-4xl font-bold mt-4">Balance</h1>
-      <p class="balance my-4">0,00 €</p>
-      <div class="flex gap-2">
-        <div>
-          <h2 class="text-2xl font-bold">Total Revenue</h2>
-          <p class="revenue text-center mt-4">0,00 €</p>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold">Total Spending</h2>
-          <p class="spending text-center mt-4">0,00 €</p>
-        </div>
+    <!-- Header -->
+    <header>
+      <div class="bg-indigo-200 flex flex-col items-center py-16 gap">
+        <h1 class="text-5xl text-slate-700 font-bold">Budget Tracker</h1>
+        <p class="text-white mt-1.5 text-lg">
+          Track your <span class="font-bold">revenue</span> and
+          <span class="font-bold">spendings!</span>
+        </p>
       </div>
-      <div class="flex">
+    </header>
+    <!-- Main-->
+    <main class="flex flex-col items-center">
+      <!-- Totals -->
+      <section aria-label="Total Balance" class="bg-white">
+        <div class="flex flex-col items-center bg-indigo-200 my-8 mx-16 rounded-xl shadow-lg p-4 max-w-[465px] md:p-6">
+        <!-- Total Balance -->
+        <h1 class="text-[28px]  font-semibold text-slate-700 md:text-[32px]">Balance</h1>
+        <p class="balance text-[22px] md:text-[26px]">0,00 €</p>
+        <div class="flex gap-20 mt-2">
+          <!-- Total Revenue -->
+          <div>
+            <h2 class="text-[18px] md:text-[22px]"><span class="font-semibold ">Total</span> Revenue</h2>
+            <p class="revenue text-center text-[20px] md:text-[24px]">0,00 €</p>
+          </div>
+          <!-- Total Spending -->
+          <div>
+            <h2 class="text-[18px] md:text-[22px]"><span class="font-semibold">Total</span> Spending</h2>
+            <p class="spending text-center text-[20px] md:text-[24px]">0,00 €</p>
+          </div>
+        </div> 
+      </section>
+
+      <!-- Add Transaction -->
+      <section aria-label="Add Transaction" class="bg-indigo-200 flex flex-col items-center w-full">
+         <div class="flex flex-col items-center bg-white my-8 p-3 md:px-9 md:py-4 rounded-xl shadow-lg">
+          <!-- Header -->
+        <h1 class="text-[28px]  font-semibold text-slate-700 md:text-[32px] mb-6">Add Transaction</h1>
+        <div class="flex">
+          <!-- Inputs -->
         <div class="flex flex-col">
           <input
             type="text"
             placeholder="amount"
-            class="transaction-amount border border-black p-2 mt-4"
+            maxlength="8"
+            class="transaction-amount border border-indigo-200 text-slate-700 focus:outline-indigo-200 p-2 my-1 rounded-lg"
           />
           <input
             type="text"
+            maxlength="15"
             placeholder="description"
-            class="transaction-description border border-black p-2"
+            class="transaction-description border border-indigo-200 text-slate-700 focus:outline-indigo-200 p-2 my-1 rounded-lg"
           />
           <input
             type="date"
             min="2010-01-01"
             max="2045-12-31"
-            class="date-picker border border-black p-2"
+            class="date-picker border border-indigo-200 text-slate-700 focus:outline-indigo-200 p-2 my-1 rounded-lg"
           />
         </div>
-        <div class="flex flex-col ml-8 mt-4">
-          <input type="radio" name="transaction" id="revenue" />
-          <label for="revenue">Revenue (+) </label>
-          <input type="radio" name="transaction" id="spending" />
-          <label for="expense">Spending (-)</label>
+        <!-- Radio Buttons -->
+        <div class="flex flex-col ml-8 justify-around items-center">
+          <div class="text-center">
+            <input type="radio" name="transaction" id="revenue" class="hidden peer"/>
+            <label for="revenue" class="border border-indigo-200 rounded-lg py-5 px-6 hover:cursor-pointer  peer-checked:bg-green-200 peer-checked:border-indigo-300 duration-300 ">Revenue</label>
+          </div>
+          <div class="text-center">
+            <input type="radio" name="transaction" id="spending" class="hidden peer" />
+            <label for="spending" class="border border-indigo-200 rounded-lg mt-3 p-5 hover:cursor-pointer peer-checked:bg-red-200 peer-checked:border-indigo-300 duration-300">Spending</label>
+          </div>
         </div>
-      </div>
-      <p class="error text-red-500 collapse">A</p>
-      <button
+        </div>
+        <!-- Error Text -->
+        <p class="error text-red-500 collapse my-1">A</p>
+        <!-- Submit Button -->
+        <button
         disabled
-        class="add-transaction bg-gray-500 px-8 py-2 active:bg-gray-300 rounded-lg mt-4 disabled:bg-gray-300 disabled:hover:cursor-not-allowed"
+        class="add-transaction bg-slate-700 rounded-3xl text-white font-bold px-24 py-2 hover:cursor-pointer hover:scale-105 active:scale-90 disabled:bg-slate-300 disabled:pointer-events-none duration-300"
       >
-        Add Transaction
+        Add
       </button>
-      <div class="transactions border border-black mt-4 flex flex-col gap-2">
-        Transactions >
       </div>
+      </section>
+      <section aria-label="Transactions">
+        <div class="transactions flex flex-col items-center gap-2 bg-indigo-200 min-w-[340px] min-h-[230px] mt-[30px] rounded-xl shadow-lg md:min-w-[445px]">
+          <h1 class="text-[28px]  font-semibold text-slate-700 md:text-[32px] mb-6 mt-3">Transactions</h1>
     </div>
+      </section>
+    </main>
+    <footer>
+      <div class="bg-indigo-200 mt-[30px] flex flex-col items-center justify-center p-8">
+        <p class="font-semibold">Ömer Faruk Esmer</p>
+        <p class="text-white">© 2025 All rights reserved</p>
+      </div>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>
